@@ -8,6 +8,7 @@ import com.example.store.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +30,19 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDTO createOrder(@RequestBody Order order) {
         return orderMapper.orderToOrderDTO(orderRepository.save(order));
+    }
+
+    /**
+     * GET /order/{id}
+     * Retrieves a specific order by its ID.
+     * into an {@link OrderDTO} and returned.
+     *
+     * @param id the ID of the order to retrieve
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        return orderRepository.findById(id)
+                .map(order -> ResponseEntity.ok(new OrderDTO(order)))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

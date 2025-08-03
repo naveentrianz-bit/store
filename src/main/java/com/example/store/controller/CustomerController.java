@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")
@@ -29,5 +30,22 @@ public class CustomerController {
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerDTO createCustomer(@RequestBody Customer customer) {
         return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+    }
+
+    /**
+     * GET /customers/search
+     * <p>
+     * Searches for customers whose names contain the specified query substring
+     * Example request: /customer/search?query=test
+     *
+     * @param query the substring to match within customer names
+     * @return a list of CustomerDTO objects whose names match the query
+     */
+    @GetMapping("/search")
+    public List<CustomerDTO> searchCustomers(@RequestParam String query) {
+        return customerRepository.searchByName(query)
+                .stream()
+                .map(CustomerDTO::new)
+                .collect(Collectors.toList());
     }
 }

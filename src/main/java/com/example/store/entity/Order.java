@@ -2,6 +2,8 @@ package com.example.store.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Entity
@@ -16,4 +18,13 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
+
 }
