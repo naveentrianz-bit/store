@@ -5,6 +5,7 @@ import com.example.store.dto.ProductDTO;
 import com.example.store.entity.Product;
 import com.example.store.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class ProductController {
      *
      * @return a list of ProductDTOs
      */
+    @Cacheable("product")
     @GetMapping
     public List<ProductDTO> getAll() {
         return productRepo.findAll().stream()
@@ -44,6 +46,7 @@ public class ProductController {
      *
      * @param id the ID of the product to retrieve
      */
+    @Cacheable("product")
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
         return productRepo.findById(id)

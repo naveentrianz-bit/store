@@ -7,11 +7,13 @@ import com.example.store.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/order")
@@ -21,6 +23,7 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
+    @Cacheable("order")
     @GetMapping
     public List<OrderDTO> getAllOrders() {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
@@ -39,6 +42,7 @@ public class OrderController {
      *
      * @param id the ID of the order to retrieve
      */
+    @Cacheable("order")
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
         return orderRepository.findById(id)
